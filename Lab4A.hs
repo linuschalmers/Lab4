@@ -17,15 +17,17 @@ data BinOp = AddOp | MulOp
 -- x, your data type should not use String or Char anywhere, since this is
 -- not needed.
 
-data Expr = Expr -- change this!
+data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int 
 
+exprTest = Expo (-4)
 
 --------------------------------------------------------------------------------
 -- * A2
 -- Define the data type invariant that checks that exponents are never negative
 prop_Expr :: Expr -> Bool
-prop_Expr = undefined
-
+prop_Expr (Expo n) = (n >= 0)  
+prop_Expr (Numeric a) = True
+prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr(expr2)
 
 --------------------------------------------------------------------------------
 -- * A3

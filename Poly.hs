@@ -93,6 +93,7 @@ prop_PolyOps p1 p2 x = evalHom (*) mulPoly && evalHom (+) addPoly
                            && prop_Poly p'
                        
 ex1    = fromList [1,2,3]
+ex2    = fromList [1,2,3,4,5]
 x      = fromList [1,0]
 xPlus1 = fromList [1,1]
 -----
