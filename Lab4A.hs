@@ -17,7 +17,7 @@ data BinOp = AddOp | MulOp
 -- x, your data type should not use String or Char anywhere, since this is
 -- not needed.
 
-data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int 
+data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
 
 exprTest = Expo (-4)
 
