@@ -32,8 +32,8 @@ instance Show Poly where
               where
                 prettyOnes = ["", "x"]
                           -- Comment out the lines below if printing polynomials does not work!
-                          ++ ["x\178", "x\179"] 
-                          ++ map (\c -> 'x':c:[]) ['\8308'..'\8313']
+--                          ++ ["x\178", "x\179"] 
+--                          ++ map (\c -> 'x':c:[]) ['\8308'..'\8313']
   
 
 instance Arbitrary Poly where
