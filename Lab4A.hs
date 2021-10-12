@@ -38,8 +38,18 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 -- You can use Haskell notation for powers: x^2
 -- You should show x^1 as just x. 
 
--- instance Show Expr where
---   show = undefined
+instance Show Expr where
+ show = showExpr
+
+showExpr :: Expr -> String
+showExpr expr = case expr of 
+  Num n = show n
+  Add x y -> showExpr x ++ "x" ++ showExpr y
+  Mul x y -> showFactor x ++ "x" ++ showFactor y
+  ^ x y -> showPower x ++ "x" ++ showPower y
+where 
+  showFactor (Add x y) = "(" ++ showExpr (Add x y) ++ ")"
+  showFactor e         = showExpr e
 
 --------------------------------------------------------------------------------
 -- * A4
