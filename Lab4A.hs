@@ -20,7 +20,10 @@ data BinOp = AddOp | MulOp
 data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
 
 exprTest :: Expr
-exprTest = Oper AddOp (Expo (-3)) (Expo 2)
+exprTest = Oper AddOp (Expo (3)) (Expo 2)
+
+exprTest2:: Expr
+exprTest2 = Oper AddOp (Expo (1)) (Numeric 3)
 
 
 --------------------------------------------------------------------------------
@@ -35,11 +38,19 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 --------------------------------------------------------------------------------
 -- * A3
 -- Make Expr an instance of Show (along the lines of the example in the lecture)
--- You can use Haskell notation for powers: x^2
+-- You can use Haskell notation for powers: x^2 
 -- You should show x^1 as just x. 
 
--- instance Show Expr where
---   show = undefined
+instance Show Expr where
+  show = show_Expr
+
+show_Expr :: Expr -> String
+show_Expr expr = case expr of 
+   Numeric n   ->  show n     
+   Oper AddOp expr1 expr2 -> "(" ++ show_Expr (expr1) ++ ") " ++ "+ " ++ "(" ++ show_Expr (expr2) ++ ") "
+   Oper MulOp expr1 expr2 -> "(" ++ show_Expr (expr1) ++ ") " ++ "* " ++ "(" ++ show_Expr (expr2) ++ ") "
+   Expo 1 -> "x" 
+   Expo n -> "x^" ++ show n
 
 --------------------------------------------------------------------------------
 -- * A4
