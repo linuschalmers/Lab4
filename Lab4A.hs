@@ -26,6 +26,7 @@ exprTest2 = Oper AddOp (Expo 1) (Numeric 3)
 
 
 
+
 --------------------------------------------------------------------------------
 -- * A2
 -- Define the data type invariant that checks that exponents are never negative
@@ -38,7 +39,7 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 --------------------------------------------------------------------------------
 -- * A3
 -- Make Expr an instance of Show (along the lines of the example in the lecture)
--- You can use Haskell notation for powers: x^2
+-- You can use Haskell notation for powers: x^2 
 -- You should show x^1 as just x. 
 
 instance Show Expr where
