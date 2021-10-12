@@ -17,30 +17,23 @@ data BinOp = AddOp | MulOp
 -- x, your data type should not use String or Char anywhere, since this is
 -- not needed.
 
-data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
+data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int 
 
-<<<<<<< Updated upstream
-exprTest = Expo (-4)
-=======
-exprTest :: Expr
-exprTest = Oper AddOp (Expo (-3)) (Expo 2)
+exprTest1 :: Expr
+exprTest1 = Oper AddOp (Expo (3)) (Expo 2)
+exprTest2 :: Expr
+exprTest2 = Oper AddOp (Expo 1) (Numeric 3)
 
->>>>>>> Stashed changes
+
 
 --------------------------------------------------------------------------------
 -- * A2
 -- Define the data type invariant that checks that exponents are never negative
 prop_Expr :: Expr -> Bool
-<<<<<<< Updated upstream
-prop_Expr (Expo n) = (n >= 0)  
-prop_Expr (Numeric a) = True
-prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr(expr2)
-=======
 prop_Expr (Expo n) = (n >= 0)
 prop_Expr (Numeric n) = True
 prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 
->>>>>>> Stashed changes
 
 --------------------------------------------------------------------------------
 -- * A3
@@ -48,8 +41,17 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 -- You can use Haskell notation for powers: x^2
 -- You should show x^1 as just x. 
 
--- instance Show Expr where
---   show = undefined
+instance Show Expr where
+ show = showExpr
+
+showExpr :: Expr -> String
+showExpr expr = case expr of
+  Numeric n -> show n
+  Oper AddOp expr1 expr2 -> "(" ++ showExpr (expr1) ++ " + " ++ showExpr (expr2) ++ ")"
+  Oper MulOp expr1 expr2 -> "(" ++ showExpr (expr1) ++ " * " ++ showExpr (expr2) ++ ")"
+  Expo 1 -> "x"
+  Expo n -> "x^" ++ show n
+
 
 --------------------------------------------------------------------------------
 -- * A4
@@ -63,7 +65,17 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 -- could use to find a smaller counterexample for failing tests
 
 instance Arbitrary Expr
-  where arbitrary = undefined
+  where arbitrary = genRand
+
+
+genRand :: Expr
+genRand expr = case expr of
+  Numeric n -> do
+   n <- choose (1, 9)
+   return (Numeric n)
+  Expo n -> do 
+    n <- choose (1, 9)
+    return (Expo n)
 
 
 --------------------------------------------------------------------------------
