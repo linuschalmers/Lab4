@@ -19,28 +19,18 @@ data BinOp = AddOp | MulOp
 
 data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
 
-<<<<<<< Updated upstream
-exprTest = Expo (-4)
-=======
 exprTest :: Expr
 exprTest = Oper AddOp (Expo (-3)) (Expo 2)
 
->>>>>>> Stashed changes
 
 --------------------------------------------------------------------------------
 -- * A2
 -- Define the data type invariant that checks that exponents are never negative
 prop_Expr :: Expr -> Bool
-<<<<<<< Updated upstream
-prop_Expr (Expo n) = (n >= 0)  
-prop_Expr (Numeric a) = True
-prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr(expr2)
-=======
 prop_Expr (Expo n) = (n >= 0)
 prop_Expr (Numeric n) = True
 prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 
->>>>>>> Stashed changes
 
 --------------------------------------------------------------------------------
 -- * A3
