@@ -65,20 +65,27 @@ showExpr expr = case expr of
 -- which gives hints to quickCheck on possible smaller expressions that it
 -- could use to find a smaller counterexample for failing tests
 
+
 instance Arbitrary Expr
-  where arbitrary = genRand
+ where arbitrary = sized genExpr
 
+genExpr :: Int -> Gen Expr
+genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)] 
+   where  
+     genNum = do
+      n <- choose (0, 10)    
+      return (Numeric n)
 
-genRand :: Expr
-genRand expr = case expr of
-  Numeric n -> do
-   n <- choose (1, 9)
-   return (Numeric n)
-  Expo n -> do 
-    n <- choose (1, 9)
-    return (Expo n)
+     genExpo = do 
+      n <- choose (1, 9)
+      return (Expo n) 
 
-
+     genOp = let n = size `div` 2 in do  
+      op <- elements [AddOp, MulOp]    
+      x  <- genExpr n
+      y  <- genExpr n
+      return (Oper op x y)
+    
 --------------------------------------------------------------------------------
 -- * A5
 -- Define the eval function which takes a value for x and an expression and
