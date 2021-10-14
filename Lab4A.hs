@@ -22,7 +22,7 @@ data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
 exprTest1 :: Expr
 exprTest1 = Oper AddOp (Expo (3)) (Expo 2)
 exprTest2 :: Expr
-exprTest2 = Oper AddOp (Expo 1) (Numeric 3)
+exprTest2 = Oper AddOp (Expo 2) (Numeric 3)
 
 
 
@@ -98,12 +98,15 @@ eval = undefined
 --------------------------------------------------------------------------------
 -- * A6
 -- Define
-exprToPoly :: Expr -> Poly
 -- Which converts an expression into a polynomial.
 -- Here it is important to think recursively to just solve the bigger problem
--- by solving the smaller problems and combining them in the right way. 
+-- by solving the smaller problems and combining them in the right way.
+exprToPoly :: Expr -> Poly
+exprToPoly (Numeric n) = fromList [n]
+exprToPoly (Expo n) = fromList (1 : replicate n 0)
+exprToPoly (Oper AddOp expr1 expr2) = exprToPoly (expr1) + exprToPoly (expr2)
+exprToPoly (Oper MulOp expr1 expr2) = exprToPoly (expr1) * exprToPoly (expr2)
 
-exprToPoly = undefined
 
 -- Define (and check) prop_exprToPoly, which checks that evaluating the
 -- polynomial you get from exprToPoly gives the same answer as evaluating
