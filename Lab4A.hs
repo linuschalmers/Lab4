@@ -26,6 +26,11 @@ exprTest2 :: Expr
 exprTest2 = Oper AddOp (Expo 2) (Numeric 3)
 
 
+<<<<<<< Updated upstream
+=======
+exprTest3:: Expr
+exprTest3 = Oper MulOp (Numeric 5) (Numeric 3)
+>>>>>>> Stashed changes
 
 
 --------------------------------------------------------------------------------
@@ -124,8 +129,9 @@ prop_exprToPoly n expr = evalPoly n (exprToPoly expr) == eval n expr
 -- * A7
 -- Now define the function going in the other direction, 
 polyToExpr :: Poly -> Expr
-
-polyToExpr = undefined
+polyToExpr p = toList(p)
+polyToExpr toList (1 : replicate n 0) = Expo n 
+polyToExpr (Oper AddOp expr1 expr2) = polyToExpr (expr1) + polyToExpr (expr2)
 
 
 -- Write (and check) a quickCheck property for this function similar to
