@@ -17,10 +17,13 @@ data BinOp = AddOp | MulOp
 -- x, your data type should not use String or Char anywhere, since this is
 -- not needed.
 
-data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
+data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int 
 
-exprTest :: Expr
-exprTest = Oper AddOp (Expo (3)) (Expo 2)
+exprTest1 :: Expr
+exprTest1 = Oper AddOp (Expo (3)) (Expo 2)
+exprTest2 :: Expr
+exprTest2 = Oper AddOp (Expo 1) (Numeric 3)
+
 
 exprTest2:: Expr
 exprTest2 = Oper AddOp (Numeric 5) (Numeric 3)
@@ -45,15 +48,16 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 -- You should show x^1 as just x. 
 
 instance Show Expr where
-  show = show_Expr
+ show = showExpr
 
-show_Expr :: Expr -> String
-show_Expr expr = case expr of 
-   Numeric n   ->  show n     
-   Oper AddOp expr1 expr2 -> "(" ++ show_Expr (expr1) ++ ") " ++ "+ " ++ "(" ++ show_Expr (expr2) ++ ") "
-   Oper MulOp expr1 expr2 -> "(" ++ show_Expr (expr1) ++ ") " ++ "* " ++ "(" ++ show_Expr (expr2) ++ ") "
-   Expo 1 -> "x" 
-   Expo n -> "x^" ++ show n
+showExpr :: Expr -> String
+showExpr expr = case expr of
+  Numeric n -> show n
+  Oper AddOp expr1 expr2 -> "(" ++ showExpr (expr1) ++ " + " ++ showExpr (expr2) ++ ")"
+  Oper MulOp expr1 expr2 -> "(" ++ showExpr (expr1) ++ " * " ++ showExpr (expr2) ++ ")"
+  Expo 1 -> "x"
+  Expo n -> "x^" ++ show n
+
 
 --------------------------------------------------------------------------------
 -- * A4
@@ -66,10 +70,27 @@ show_Expr expr = case expr of
 -- which gives hints to quickCheck on possible smaller expressions that it
 -- could use to find a smaller counterexample for failing tests
 
+
 instance Arbitrary Expr
-  where arbitrary = undefined
+ where arbitrary = sized genExpr
 
+genExpr :: Int -> Gen Expr
+genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)] 
+   where  
+     genNum = do
+      n <- choose (0, 10)    
+      return (Numeric n)
 
+     genExpo = do 
+      n <- choose (1, 9)
+      return (Expo n) 
+
+     genOp = let n = size `div` 2 in do  
+      op <- elements [AddOp, MulOp]    
+      x  <- genExpr n
+      y  <- genExpr n
+      return (Oper op x y)
+    
 --------------------------------------------------------------------------------
 -- * A5
 -- Define the eval function which takes a value for x and an expression and
