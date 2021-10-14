@@ -21,12 +21,10 @@ data Expr = Oper BinOp Expr Expr | Numeric Int | Expo Int
 
 exprTest1 :: Expr
 exprTest1 = Oper AddOp (Expo (3)) (Expo 2)
+
 exprTest2 :: Expr
 exprTest2 = Oper AddOp (Expo 2) (Numeric 3)
 
-
-exprTest2:: Expr
-exprTest2 = Oper AddOp (Numeric 5) (Numeric 3)
 
 exprTest3:: Expr
 exprTest3 = Oper MulOp (Numeric 5) (Numeric 3)
