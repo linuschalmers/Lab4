@@ -25,6 +25,11 @@ exprTest2 :: Expr
 exprTest2 = Oper AddOp (Expo 2) (Numeric 3)
 
 
+exprTest2:: Expr
+exprTest2 = Oper AddOp (Numeric 5) (Numeric 3)
+
+exprTest3:: Expr
+exprTest3 = Oper MulOp (Numeric 5) (Numeric 3)
 
 
 --------------------------------------------------------------------------------
@@ -91,9 +96,12 @@ genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)]
 -- Define the eval function which takes a value for x and an expression and
 -- evaluates it
 
-eval :: Int -> Expr -> Int
-eval = undefined
-
+eval :: Int -> Expr -> Int  
+eval x expr = case expr of
+  Numeric n -> n 
+  Oper AddOp expr1 expr2 -> (eval x expr1) + (eval x expr2)
+  Oper MulOp expr1 expr2 -> (eval x expr1) * (eval x expr2)
+  Expo n -> (x^n) 
 
 --------------------------------------------------------------------------------
 -- * A6
