@@ -130,11 +130,23 @@ polyToExpr poly = undefined
 
 
 listToExpr :: [Int] -> Expr
-listToExpr (x:xs)
+listToExpr [] = Numeric 0
+listToExpr (x:xs) 
  | x == 0 = listToExpr xs
- | x == 1 = Expo (length xs)
- | otherwise = (Oper AddOp (x * (Expo(length xs))) (listToExpr xs))
+ | otherwise = add (mul (Numeric x) ((Expo (length xs)))) (listToExpr xs)
 
+
+add (Numeric 0) e           = e
+add e           (Numeric 0) = e
+add (Numeric m) (Numeric n) = Numeric (m+n)
+add e1           e2         = Oper AddOp e1 e2
+
+mul (Numeric 0) e           = Numeric 0
+mul e (Numeric 0)           = Numeric 0
+mul (Numeric 1) e           = e
+mul e (Numeric 1)           = e
+mul (Numeric m) (Numeric n) = Numeric (n*m)
+mul e1           e2         = Oper MulOp (e1) (e2)
 
 
 
