@@ -1,5 +1,6 @@
--- Authors:
--- Date:
+-- Authors: Albin Boklund, Linus Lindström, Isak Nordin
+-- Group: 12
+-- Date: 2021-10-15
 
 import Poly
 import Test.QuickCheck
@@ -29,10 +30,14 @@ exprTest2 = Oper AddOp (Expo 2) (Numeric 3)
 exprTest3:: Expr
 exprTest3 = Oper MulOp (Numeric 5) (Numeric 3)
 
+exprTest4 :: Expr
+exprTest4 = Oper AddOp (Numeric 2) (Numeric 0)
+
 
 --------------------------------------------------------------------------------
 -- * A2
 -- Define the data type invariant that checks that exponents are never negative
+-- Property for Expr to uphold
 prop_Expr :: Expr -> Bool
 prop_Expr (Expo n) = (n >= 0)
 prop_Expr (Numeric n) = True
@@ -48,6 +53,7 @@ prop_Expr (Oper binop expr1 expr2) = prop_Expr (expr1) && prop_Expr (expr2)
 instance Show Expr where
  show = showExpr
 
+--Shows an expression in text form by using show
 showExpr :: Expr -> String
 showExpr expr = case expr of
   Numeric n -> show n
@@ -94,6 +100,7 @@ genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)]
 -- Define the eval function which takes a value for x and an expression and
 -- evaluates it
 
+-- Function for evaluating expressions by using case of 
 eval :: Int -> Expr -> Int
 eval x expr = case expr of
   Numeric n -> n
@@ -108,6 +115,8 @@ eval x expr = case expr of
 -- Which converts an expression into a polynomial.
 -- Here it is important to think recursively to just solve the bigger problem
 -- by solving the smaller problems and combining them in the right way.
+
+--Function for converting expressions to Poly by using fromList 
 exprToPoly :: Expr -> Poly
 exprToPoly (Numeric n) = fromList [n]
 exprToPoly (Expo n) = fromList (1 : replicate n 0)
@@ -119,18 +128,33 @@ exprToPoly (Oper MulOp expr1 expr2) = exprToPoly (expr1) * exprToPoly (expr2)
 -- polynomial you get from exprToPoly gives the same answer as evaluating
 -- the expression
 
+-- Property for exprToPoly to uphold 
 prop_exprToPoly :: Int -> Expr -> Bool
 prop_exprToPoly n expr = evalPoly n (exprToPoly expr) == eval n expr
 
 --------------------------------------------------------------------------------
 -- * A7
 -- Now define the function going in the other direction, 
-polyToExpr :: Poly -> Expr
+{--polyToExpr :: Poly -> Expr
 polyToExpr poly =
- |  = [x | x = ]
+ |  = [x | x = ]--}
 
 
+add (Numeric 0) x = x
+add x (Numeric 0) = x
+add (Numeric m) (Numeric n) = Numeric (n+m)
+add x y = Oper AddOp x y
 
+mul (Numeric 0) x = Numeric 0
+mul e (Numeric 0) = Numeric 0
+mul (Numeric 1) x = x
+mul x (Numeric 1) = x
+mul (Numeric m) (Numeric n) = Numeric (m*n) 
+mul x y = mul x y
+
+smartExpo _ (Numeric 0) = Numeric 1
+smartExpo x (Numeric 1) = x
+smartExpo x (Expo n) = Expo n
 -- Write (and check) a quickCheck property for this function similar to
 -- question 6. 
 prop_polyToExpr = undefined
@@ -138,10 +162,10 @@ prop_polyToExpr = undefined
 --------------------------------------------------------------------------------
 -- * A8
 -- Write a function
---simplify :: Expr -> Expr
+{--simplify :: Expr -> Expr
 -- which simplifies an expression by converting it to a polynomial
 -- and back again
---simplify expr = polyToExpr(exprToPoly expr) 
+simplify expr = polyToExpr(exprToPoly expr)--} 
 
 --------------------------------------------------------------------------------
 -- * A9
@@ -152,7 +176,11 @@ prop_noJunk :: Expr -> Bool
 --where junk is defined to be multiplication by one or zero,
 --addition of zero, addition or multiplication of numbers, or x to the
 --power zero. (You may need to fix A7)
-
-prop_noJunk = undefined
+prop_noJunk (Numeric 0) = False
+prop_noJunk (Oper MulOp (Numeric 1) _) = False
+prop_noJunk (Oper MulOp _ (Numeric 1)) = False
+prop_noJunk (Oper AddOp x y) = prop_noJunk(x) && prop_noJunk(y) 
+prop_noJunk (Oper MulOp x y) = prop_noJunk(x) && prop_noJunk(y) 
+prop_noJunk (Expo y) = y/=0
 
 --------------------------------------------------------------------------------
