@@ -176,6 +176,11 @@ prop_noJunk :: Expr -> Bool
 --addition of zero, addition or multiplication of numbers, or x to the
 --power zero. (You may need to fix A7)
 
-prop_noJunk = undefined
+prop_noJunk (Numeric x) = x/=0
+prop_noJunk (Oper MulOp (Numeric 1) _) = False
+prop_noJunk (Oper MulOp _ (Numeric 1)) = False
+prop_noJunk (Oper MulOp x y) = prop_noJunk(x) && prop_noJunk(y)
+prop_noJunk (Oper AddOp x y) = prop_noJunk(x) && prop_noJunk(y)
+prop_noJunk (Expo y) = y/=0
 
 --------------------------------------------------------------------------------
