@@ -97,7 +97,14 @@ genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)]
 -- Define the eval function which takes a value for x and an expression and
 --evaluates it
 
+-- Takes in Int and Expr and calculates depending on the operation. 
+-- If it is a numeric it just returns the value of numeric n
+-- If it is addition, it adds together the 2 expressions sent in, and sends 
+-- expr1 / expr2 to eval again and decides what to do with it. 
+-- If it is multiplikation, it does the same as in addition, just multiply 
+-- the expressions instead. 
 -- Function for evaluating expressions by using case of 
+
 eval :: Int -> Expr -> Int
 eval x expr = case expr of
   Numeric n -> n
