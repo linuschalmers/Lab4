@@ -74,7 +74,7 @@ showExpr expr = case expr of
 
 instance Arbitrary Expr
  where arbitrary = sized genExpr
-
+-- Generates expressions by generationg numbers, exponentials and operations.
 genExpr :: Int -> Gen Expr
 genExpr size = frequency [(1, genNum), (3, genExpo), (size, genOp)] 
    where  
@@ -113,7 +113,7 @@ eval x expr = case expr of
 -- Here it is important to think recursively to just solve the bigger problem
 -- by solving the smaller problems and combining them in the right way.
 
---Function for converting expressions to Poly by using fromList 
+--Function for converting expressions to Poly by using fromList and converting how to use add or multiply
 exprToPoly :: Expr -> Poly
 exprToPoly (Numeric n) = fromList [n]
 exprToPoly (Expo n) = fromList (1 : replicate n 0)
@@ -125,26 +125,30 @@ exprToPoly (Oper MulOp expr1 expr2) = exprToPoly (expr1) * exprToPoly (expr2)
 -- polynomial you get from exprToPoly gives the same answer as evaluating
 -- the expression
 
+-- Property for exprToPoly to uphold
 prop_exprToPoly :: Int -> Expr -> Bool
 prop_exprToPoly n expr = evalPoly n (exprToPoly expr) == eval n expr
 
 --------------------------------------------------------------------------------
 -- * A7
 -- Now define the function going in the other direction, 
+
+-- Converts a poly to an expression by using toList poly on listToExpr
 polyToExpr :: Poly -> Expr
 polyToExpr poly = listToExpr (toList poly)
 
-
+-- Converts a list of Ints to an expression
 listToExpr :: [Int] -> Expr
 listToExpr [] = Numeric 0
 listToExpr (x:xs) = add (mul (Numeric x) (smartExpo (Expo (length xs)))) (listToExpr xs)
 
-
+-- Smart expressions for addition
 add (Numeric 0) e           = e
 add e           (Numeric 0) = e
 add (Numeric m) (Numeric n) = Numeric (m+n)
 add e1           e2         = Oper AddOp e1 e2
 
+-- Smart expressions for multiply
 mul (Numeric 0) e           = Numeric 0
 mul e (Numeric 0)           = Numeric 0
 mul (Numeric 1) e           = e
@@ -161,6 +165,8 @@ smartExpo (Expo n) = Expo n
 
 -- Write (and check) a quickCheck property for this function similar to
 -- question 6. 
+
+-- property for polyToExpr to uphold 
 prop_polyToExpr :: Int -> Poly -> Bool
 prop_polyToExpr  n poly = evalPoly n poly == eval n (polyToExpr poly)
 
