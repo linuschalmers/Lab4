@@ -126,8 +126,15 @@ prop_exprToPoly n expr = evalPoly n (exprToPoly expr) == eval n expr
 -- * A7
 -- Now define the function going in the other direction, 
 polyToExpr :: Poly -> Expr
-polyToExpr poly =
- |  = [x | x = ]
+polyToExpr poly = undefined
+
+
+listToExpr :: [Int] -> Expr
+listToExpr (x:xs)
+ | x == 0 = listToExpr xs
+ | x == 1 = Expo (length xs)
+ | otherwise = (Oper AddOp (x * (Expo(length xs))) (listToExpr xs))
+
 
 
 
