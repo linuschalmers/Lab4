@@ -185,6 +185,7 @@ prop_noJunk :: Expr -> Bool
 --where junk is defined to be multiplication by one or zero,
 --addition of zero, addition or multiplication of numbers, or x to the
 --power zero. (You may need to fix A7)
+
 prop_noJunk (Numeric 0) = False
 prop_noJunk (Oper MulOp (Numeric 1) _) = False
 prop_noJunk (Oper MulOp _ (Numeric 1)) = False
@@ -193,3 +194,4 @@ prop_noJunk (Oper MulOp x y) = prop_noJunk(x) && prop_noJunk(y)
 prop_noJunk (Expo y) = y/=0
 
 --------------------------------------------------------------------------------
+--
