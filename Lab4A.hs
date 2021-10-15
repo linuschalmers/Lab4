@@ -176,18 +176,25 @@ simplify expr = polyToExpr(exprToPoly expr)
 -- * A9
 -- Write a quickCheck property
 prop_noJunk :: Expr -> Bool
+prop_noJunk e = prop_noJunk' (simplify e)
 
+prop_noJunk' :: Expr -> Bool
+prop_noJunk' (Numeric x) = True
+prop_noJunk' (Oper AddOp _ (Numeric 0)) = False
+prop_noJunk' (Oper AddOp (Numeric 0) _) = False
+prop_noJunk' (Oper MulOp (Numeric 1) _) = False
+prop_noJunk' (Oper MulOp _ (Numeric 1)) = False
+prop_noJunk' (Oper MulOp x y) = prop_noJunk(x) && prop_noJunk(y)
+prop_noJunk' (Oper AddOp x y) = prop_noJunk(x) && prop_noJunk(y)
+prop_noJunk' (Expo y) = y/=0
 --that checks that a simplified expression does not contain any "junk":
 --where junk is defined to be multiplication by one or zero,
 --addition of zero, addition or multiplication of numbers, or x to the
 --power zero. (You may need to fix A7)
 
 --prop_noJunk checks for multiplication with 1 or 0, addition with 0 or power with 0 and returns false if this happens
-prop_noJunk (Numeric x) = x/=0
-prop_noJunk (Oper MulOp (Numeric 1) _) = False
-prop_noJunk (Oper MulOp _ (Numeric 1)) = False
-prop_noJunk (Oper MulOp x y) = prop_noJunk(x) && prop_noJunk(y)
-prop_noJunk (Oper AddOp x y) = prop_noJunk(x) && prop_noJunk(y)
-prop_noJunk (Expo y) = y/=0
+
+
+
 
 --------------------------------------------------------------------------------
