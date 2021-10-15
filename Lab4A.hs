@@ -123,8 +123,9 @@ prop_exprToPoly n expr = evalPoly n (exprToPoly expr) == eval n expr
 -- * A7
 -- Now define the function going in the other direction, 
 polyToExpr :: Poly -> Expr
+polyToExpr poly =
+ |  = [x | x = ]
 
-polyToExpr = undefined
 
 
 -- Write (and check) a quickCheck property for this function similar to
@@ -134,10 +135,10 @@ prop_polyToExpr = undefined
 --------------------------------------------------------------------------------
 -- * A8
 -- Write a function
-simplify :: Expr -> Expr
+--simplify :: Expr -> Expr
 -- which simplifies an expression by converting it to a polynomial
 -- and back again
-simplify = undefined
+--simplify expr = polyToExpr(exprToPoly expr) 
 
 --------------------------------------------------------------------------------
 -- * A9
